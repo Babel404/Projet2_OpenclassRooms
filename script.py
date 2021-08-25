@@ -53,7 +53,7 @@ def all_book():
 	print('Your csv file have been created, you can found it as out.csv in your current directory')
 
 #def by_categorie():
-list_out=[]
+list_out=[]		
 list_url = []
 response = requests.get(ORIGIN_URL)
 data = response.text
@@ -62,9 +62,84 @@ category_post = soup.find_all('ul',{'class':'nav nav-list'})
 for k in category_post[0].find_all('a') :
 	list_url.append(k.get('href'))
 
+#print(list_url)
+
 for url in list_url[1:2]:
+	list_category = []
+	cat = ""
 	data = requests.get(ORIGIN_URL+url).text
-	print(data.encode('utf-8'))
+	#print(data.encode('utf-8'))
+	soup_intra = BeautifulSoup(data, features='html.parser')
+	post_listing = soup.find_all('article',{'class': 'product_pod'})
+	for post in post_listing : 
+		post_link = ORIGIN_URL + post.find('a').get('href')
+		response_intra = requests.get(post_link)
+		data_intra = response_intra.text
+		soup_intra = BeautifulSoup(data_intra, features='html.parser')
+		title = soup_intra.find('h1')
+		tds = soup_intra.find_all('td')
+		upc = tds[0]
+		product_description = soup_intra.find("meta", {'name' : "description"})["content"]
+		product_description = product_description.replace("\n", "")
+		category = soup_intra.find_all('li')[2].text.replace("\n", "")
+		review_rating = soup_intra.find('p', class_="star-rating")
+		review_rating = review_rating['class'][1]+" / Five"
+		image_url = ORIGIN_URL + soup_intra.find('img')['src'].replace("../../", "")
+		#print(repr(soup_intra.find('td')))
+		#print(info)
+		#print(tds[3])
+		#print(product_description["content"].encode('unicode-escape').decode('utf-8'))
+		dic_out = {
+			'product_page_url' : post_link,
+			'upc' : upc.text,
+			'title' : title.text,
+			'price_including_tax' : tds[3].text.replace('Â', ''),
+			'price_excluding_tax' : tds[2].text.replace('Â', ''),
+			'number_available' : tds[5].text,
+			'product_description' : product_description,
+			'category' : category,
+			'review_rating' : review_rating,
+			'image_url' : image_url,
+		}
+		cat = category
+		list_category.append(dic_out)
+	df = pd.DataFrame(list_category)
+	name_df = cat+'.csv'
+	df.to_csv(name_df, index=False)
+
+
+	"""
+		post_link = BASE_URL + post.find('a').get('href')
+		response_intra = requests.get(post_link)
+		data_intra = response_intra.text
+		soup_intra = BeautifulSoup(data_intra, features='html.parser')
+		title = soup_intra.find('h1')
+		tds = soup_intra.find_all('td')
+		upc = tds[0]
+		product_description = soup_intra.find("meta", {'name' : "description"})["content"]
+		product_description = product_description.replace("\n", "")
+		category = soup_intra.find_all('li')[2].text.replace("\n", "")
+		review_rating = soup_intra.find('p', class_="star-rating")
+		review_rating = review_rating['class'][1]+" / Five"
+		image_url = ORIGIN_URL + soup_intra.find('img')['src'].replace("../../", "")
+		#print(repr(soup_intra.find('td')))
+		#print(info)
+		#print(tds[3])
+		#print(product_description["content"].encode('unicode-escape').decode('utf-8'))
+		dic_out = {
+			'product_page_url' : post_link,
+			'upc' : upc.text,
+			'title' : title.text,
+			'price_including_tax' : tds[3].text.replace('Â', ''),
+			'price_excluding_tax' : tds[2].text.replace('Â', ''),
+			'number_available' : tds[5].text,
+			'product_description' : product_description,
+			'category' : category,
+			'review_rating' : review_rating,
+			'image_url' : image_url,
+		}
+		print(dic_out)
+		"""
 	#soup_intra = BeautifulSoup(data, features='html.parser')
 
 """
