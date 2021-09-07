@@ -128,25 +128,25 @@ def by_categorie():
 
 
 
-#def only_images():
-for i in range(1,50):
-	final_url = PAGE_URL.format(quote_plus(str(i)))
-	response = requests.get(final_url)
-	data = response.text
-	soup = BeautifulSoup(data, features='html.parser')
-	post_listing = soup.find_all('article',{'class': 'product_pod'})
+def only_images():
+	for i in range(1,50):
+		final_url = PAGE_URL.format(quote_plus(str(i)))
+		response = requests.get(final_url)
+		data = response.text
+		soup = BeautifulSoup(data, features='html.parser')
+		post_listing = soup.find_all('article',{'class': 'product_pod'})
 
-#Get every link for every book to scrape
-	for post in post_listing :
-		post_link = BASE_URL + post.find('a').get('href')
-		response_intra = requests.get(post_link)
-		data_intra = response_intra.text
-		soup_intra = BeautifulSoup(data_intra, features='html.parser')
+	#Get every link for every book to scrape
+		for post in post_listing :
+			post_link = BASE_URL + post.find('a').get('href')
+			response_intra = requests.get(post_link)
+			data_intra = response_intra.text
+			soup_intra = BeautifulSoup(data_intra, features='html.parser')
 
-		tds = soup_intra.find_all('td')
-		upc = tds[0]
-		image_url = ORIGIN_URL + soup_intra.find('img')['src'].replace("../../", "")
-		urllib.request.urlretrieve(str(image_url), str(upc.text)+'.jpg')
+			tds = soup_intra.find_all('td')
+			upc = tds[0]
+			image_url = ORIGIN_URL + soup_intra.find('img')['src'].replace("../../", "")
+			urllib.request.urlretrieve(str(image_url), str(upc.text)+'.jpg')
 
 
 """		
