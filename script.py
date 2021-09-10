@@ -125,9 +125,6 @@ def by_categorie():
 		name_df = cat+'.csv'
 		df.to_csv(name_df, index=False)
 	
-
-
-
 def only_images():
 	for i in range(1,50):
 		final_url = PAGE_URL.format(quote_plus(str(i)))
@@ -147,6 +144,17 @@ def only_images():
 			upc = tds[0]
 			image_url = ORIGIN_URL + soup_intra.find('img')['src'].replace("../../", "")
 			urllib.request.urlretrieve(str(image_url), str(upc.text)+'.jpg')
+
+
+def main():
+    print('Hey we are going to download all the books by categorie in different .csv file for each categorie')
+    by_categorie()
+    print('Ok we finished the first download, now we\'re going to download the images')
+    only_images()
+    print('We finished all the downloads, you can find images and .csv into the current directory')
+
+if __name__ == "__main__":
+    main()
 
 
 """		
