@@ -1,9 +1,10 @@
-# Projet2_OpenclassRooms
+# Projet2 OpenclassRooms
 
 
-LIGNES DE COMMANDES A LANCER APRES AVOIR RECUPERER LE REPO GIT :
-
-python -m venv myenv<br>
-source myenv\Scripts\activate<br>
-pip install -r requirements.txt<br>
-python script.py<br>
+Lignes de commandes à rentrer dans un terminal après avoir récupérer le repo :
+```bash
+python -m venv myenv
+source myenv\Scripts\activate
+pip install -r requirements.txt
+python script.py
+```
